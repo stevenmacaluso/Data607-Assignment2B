@@ -1,0 +1,9 @@
+---
+title: "Evaluating Classification Model Performance - Week 2B"
+format: html
+editor: visual
+---
+
+## Introduction
+
+In this assignment, I will be evaluating classification model performance using the penguin_predictions.csv dataset. The dataset contains three columns: pred_female, pred_class, and sex. Pred_female contains the model-predicted probability that the observation belongs to the "female" class, pred_class is the predicted class label, and sex is the actual class label. I will be presenting the null error rate, confusion matrices at multiple thresholds, performance metrics, and threshold use cases. I believe the threshold use cases will be the most difficult section of the project, as it requires more than just calculations. Effective analysis of the calculations is required to understand when a particular threshold is preferable.
