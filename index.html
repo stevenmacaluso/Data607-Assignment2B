@@ -73,6 +73,101 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In this assignment, I will be evaluating classification model performance using the penguin_predictions.csv dataset. The dataset contains three columns: pred_female, pred_class, and sex. Pred_female contains the model-predicted probability that the observation belongs to the “female” class, pred_class is the predicted class label, and sex is the actual class label. I will be presenting the null error rate, confusion matrices at multiple thresholds, performance metrics, and threshold use cases. I believe the threshold use cases will be the most difficult section of the project, as it requires more than just calculations. Effective analysis of the calculations is required to understand when a particular threshold is preferable.</p>
 </section>
+<section id="body" class="level2">
+<h2 class="anchored" data-anchor-id="body">Body</h2>
+<p>To start, I calculated the null error rate (NER) for this dataset. Determining the null error rate is important because it is effective at evaluating models trained on imbalanced datasets. NER can effectively help identify bias towards the most common classification. NER serves as a good baseline to determine how effective a model is in comparison to a simple guess. For NER, I did all of my calculations using R. First, I loaded the necessary libraries and read the “penguin_predictions.csv” file.</p>
+<pre><code>library(tidyverse) penguin_predictions &lt;- read.csv("penguin_predictions.csv")</code></pre>
+<p>To calculate NER, you must divide the number of minority class samples by the total number of samples in a dataset. It is important to determine in this case, which sex is the minority out of the entire dataset. To visualize this, I created a bar chart:</p>
+<pre><code>ggplot(data = penguin_predictions, aes(x = sex)) + geom_bar()</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/clipboard-1257140792.png" class="img-fluid figure-img"></p>
+<figcaption>As the chart suggests, female is the minority grouping. Therefore, the NER formula is as follows:</figcaption>
+</figure>
+</div>
+<p><strong><em>NER = number of females / total number of penguins</em></strong></p>
+<p>For the calculation, I decided it was best to create two new variables</p>
+<p><em>total</em>: represents the total number of penguins</p>
+<p><em>fm_count</em>: represents the total number of female penguins</p>
+<p>In order to calculate the total, I used this script:</p>
+<p><code>total &lt;- nrow(penguin_predictions)</code></p>
+<p>This simply counts the number of rows in our dataset. Since each row represents a different penguin, the total number of rows is our total number of penguins.</p>
+<p>Next, I had to calculate the total number of females. I did this by summing up the amount of rows that contained “female” in the column “sex.” This code is as follows:</p>
+<p><code>fm_count &lt;- sum(penguin_predictions$sex == "female", na.rm = TRUE)</code></p>
+<p>The <code>na.rm = TRUE</code> section is included to account for any missing values, which isn’t an issue in this dataset, but it is good practice to take missing values into consideration.</p>
+<p>Finally, I did a simple calculation to find the NER:</p>
+<p><code>ner &lt;- fm_count / total</code></p>
+<p>The NER came out to</p>
+<pre><code> 0.4193548</code></pre>
+<p>For confusion matrices and performance metrics, I performed all of the calculations by hand. To start, I created three confusion matrices based on three different thresholds (0.2, 0.5, and 0.8). For the sake of simplicity, I will be referring to the 0.2 threshold matrix as the “low threshold matrix,” the 0.5 matrix as the “medium threshold matrix,” and the 0.8 threshold matrix as the “high threshold matrix.” I will display each of these matrices here:</p>
+<p><img src="images/clipboard-3739749456.png" class="img-fluid"></p>
+<p><img src="images/clipboard-899903092.png" class="img-fluid"></p>
+<p><img src="images/clipboard-701575436.png" class="img-fluid"></p>
+<p>The following are the values of True Positives (TP), False Positives (FP), True Negatives (TN), and False Negatives (FN) for each matrix:</p>
+<p><strong>Low Threshold Matrix (Threshold = 0.2)</strong></p>
+<p>TP = 37</p>
+<p>FP = 6</p>
+<p>FN = 2</p>
+<p>TN = 48</p>
+<p><strong>Medium Threshold Matrix (Threshold = 0.5)</strong></p>
+<p>TP = 36</p>
+<p>FP = 3</p>
+<p>FN = 3</p>
+<p>TN = 51</p>
+<p><strong>High Threshold Matrix (Threshold = 0.8)</strong></p>
+<p>TP = 36</p>
+<p>FP = 2</p>
+<p>FN = 3</p>
+<p>TN = 52</p>
+<p><strong>Accuracy</strong></p>
+<p>The accuracy of each matrix can be determined with the following formula:</p>
+<p><strong><em>Accuracy = (TP +TN) / (TP + FP + FN +TN)</em></strong></p>
+<p>The accuracy for each matrix is as follows,</p>
+<p><strong>Low Threshold Matrix</strong></p>
+<p>Accuracy = 0.904</p>
+<p><strong>Medium Threshold Matrix</strong></p>
+<p>Accuracy = 0.926</p>
+<p><strong>High Threshold Matrix</strong></p>
+<p>Accuracy = 0.936</p>
+<p><strong>Precision</strong></p>
+<p>The precision of each matrix can be found with the following formula,</p>
+<p><strong><em>Precision = TP / (TP + FP)</em></strong></p>
+<p>The precision of each matrix is as follows,</p>
+<p><strong>Low Threshold Matrix</strong></p>
+<p>Precision = 0.860</p>
+<p><strong>Medium Threshold Matrix</strong></p>
+<p>Precision = 0.923</p>
+<p><strong>High Threshold Matrix</strong></p>
+<p>Precision = 0.947</p>
+<p><strong>Recall</strong></p>
+<p>The recall of each matrix can be determined with the following formula,</p>
+<p><strong><em>Recall = TP / (TP + FN)</em></strong></p>
+<p>The recall of each matrix is as follows,</p>
+<p><strong>Low Threshold Matrix</strong></p>
+<p>Recall = 0.949</p>
+<p><strong>Medium Threshold Matrix</strong></p>
+<p>Recall = 0.923</p>
+<p><strong>High Threshold Matrix</strong></p>
+<p>Recall = 0.923</p>
+<p><strong>F1 Score</strong></p>
+<p>The F1 score of each matrix can be determined with the following formula,</p>
+<p>F1 Score = 2 * [ (Precision * Recall) / (Precision + Recall) ]</p>
+<p>The F1 Scores for each matrix are as follows,</p>
+<p><strong>Low Threshold Matrix</strong></p>
+<p>F1 Score = 0.902</p>
+<p><strong>Medium Threshold Matrix</strong></p>
+<p>F1 Score = 0.923</p>
+<p><strong>High Threshold Matrix</strong></p>
+<p>F1 Score = 0.935</p>
+<p><strong>Threshold Use Cases</strong></p>
+<p>An important note to consider when using confusion matrices is the effectiveness of a given threshold depending on the scenario. A low threshold and a high threshold both have their proper use cases scenarios.</p>
+<p>A low threshold will predict positive much more often. This increases the true positives, but also drives up the false positives. Thus, low threshold should be used when missing a positive case is incredibly detrimental. For example, a low threshold would be used if we were predicting cancer development. This is because a false positive is much less detrimental than a false negative. A false negative can lead to someone not getting the treatment they need.</p>
+<p>On the other hand. high thresholds predict negative much more often. This increases true negative and false negative, and also reduces false positive. Therefore, high thresholds should be used when identifying false positives is much more costly than identifying false negatives. An example would be if a credit card company is predicting fraudulent activity. It is much more costly for them to accidentally freeze someone’s credit card than it would be to miss a case of fraud, which could be reported by the card holder when they notice the false charges.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>To conclude, a model can be implemented, tested, and evaluated in many ways depending on the use case. In this assignment, I used one dataset and tested many different ways to evaluate the results of the predictions. A way to build upon this work could be to use numerous predictive models and evaluate them all using these methods to determine which is the most effective, or appropriate for a certain setting.</p>
+</section>
 
 </main>
 <!-- /main column -->
